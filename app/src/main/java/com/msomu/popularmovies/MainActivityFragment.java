@@ -1,14 +1,11 @@
 package com.msomu.popularmovies;
 
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,14 +29,10 @@ import java.util.List;
  */
 public class MainActivityFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener {
 
-    private static List<ViewModel> items = new ArrayList<>();
     private static final String POPULAR_MOVIES_QUERY = "popularity.desc";
-
-    static {
-        for (int i = 1; i <= 10; i++) {
-            items.add(new ViewModel("Item " + i, "http://lorempixel.com/500/500/animals/" + i));
-        }
-    }
+    private static final String TOP_RATED_MOVIES_QUERY = "popularity.desc";
+    private static List<ViewModel> items = new ArrayList<>();
+    private RecyclerViewAdapter adapter;
 
     private View rootView;
     public MainActivityFragment() {
@@ -53,7 +45,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     }
 
     private void getMoviesList() {
-        new FetchWeatherTask().execute(POPULAR_MOVIES_QUERY);
+        new FetchMoviesList().execute(POPULAR_MOVIES_QUERY);
     }
 
     @Override
@@ -67,7 +59,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     private void initRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(items);
+        adapter = new RecyclerViewAdapter(items);
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
     }
@@ -77,22 +69,20 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 
     }
 
-    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
-        private final String TAG = FetchWeatherTask.class.getSimpleName();
+    public class FetchMoviesList extends AsyncTask<String, Void, List<ViewModel>> {
+        private final String TAG = FetchMoviesList.class.getSimpleName();
 
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(List<ViewModel> result) {
             if (result != null) {
                 items.clear();
-                for (String dayForecast :
-                        result) {
-                    items.add(new ViewModel(dayForecast,""));
-                }
+                items.addAll(result);
+                adapter.notifyDataSetChanged();
             }
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected List<ViewModel> doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             if (params == null) {
@@ -174,7 +164,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
             return null;
         }
 
-        private String[] getMovies(String movieListString) throws JSONException {
+        private List<ViewModel> getMovies(String movieListString) throws JSONException {
             Log.d(TAG,movieListString);
             final String TMDB_RESULTS = "results";
             final String TMDB_IMAGE = "poster_path";
@@ -182,12 +172,14 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 
             JSONObject movieListJson = new JSONObject(movieListString);
             JSONArray resultsArray = movieListJson.getJSONArray(TMDB_RESULTS);
-
+            List<ViewModel> movieList = new ArrayList<>();
             for (int i = 0; i < resultsArray.length(); i++) {
-
+                JSONObject singleMoview = resultsArray.getJSONObject(i);
+                ViewModel viewModel = new ViewModel(singleMoview.getString(TMDB_TITLE), singleMoview.getString(TMDB_IMAGE));
+                movieList.add(viewModel);
             }
 
-            return new String[0];
+            return movieList;
         }
     }
 }
