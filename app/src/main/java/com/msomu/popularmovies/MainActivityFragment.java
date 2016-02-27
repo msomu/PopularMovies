@@ -1,5 +1,6 @@
 package com.msomu.popularmovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -104,7 +105,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 
     @Override
     public void onItemClick(View view, ViewModel viewModel) {
-
+        startActivity(new Intent(getActivity(), DetailActivity.class));
     }
 
     public class FetchMoviesList extends AsyncTask<String, Void, List<ViewModel>> {
