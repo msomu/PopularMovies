@@ -8,6 +8,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -30,22 +33,57 @@ import java.util.List;
 public class MainActivityFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener {
 
     private static final String POPULAR_MOVIES_QUERY = "popularity.desc";
-    private static final String TOP_RATED_MOVIES_QUERY = "popularity.desc";
+    private static final String TOP_RATED_MOVIES_QUERY = "vote_average.desc";
     private static List<ViewModel> items = new ArrayList<>();
     private RecyclerViewAdapter adapter;
+    private Menu mainFragmentMenu;
 
     private View rootView;
+
     public MainActivityFragment() {
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getMoviesList();
+        setHasOptionsMenu(true);
+        getMoviesList(POPULAR_MOVIES_QUERY);
     }
 
-    private void getMoviesList() {
-        new FetchMoviesList().execute(POPULAR_MOVIES_QUERY);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        mainFragmentMenu = menu;
+        inflater.inflate(R.menu.fragment_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_most_popular) {
+            Log.d("MainFragment", "Most Popular clicked");
+            getMoviesList(POPULAR_MOVIES_QUERY);
+            item.setVisible(false);
+
+            return true;
+        } else if (item.getItemId() == R.id.action_highest_rated) {
+            Log.d("MainFragment", "Highest Rated clicked");
+            getMoviesList(TOP_RATED_MOVIES_QUERY);
+            item.setVisible(false);
+            return true;
+        }
+        return true;
+    }
+
+    private void getMoviesList(String query) {
+        new FetchMoviesList().execute(query);
+        if (query.equals(POPULAR_MOVIES_QUERY)) {
+            if (mainFragmentMenu != null) {
+                mainFragmentMenu.findItem(R.id.action_highest_rated).setVisible(true);
+            }
+        } else if (query.equals(TOP_RATED_MOVIES_QUERY)) {
+            if (mainFragmentMenu != null) {
+                mainFragmentMenu.findItem(R.id.action_most_popular).setVisible(true);
+            }
+        }
     }
 
     @Override
@@ -165,7 +203,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
         }
 
         private List<ViewModel> getMovies(String movieListString) throws JSONException {
-            Log.d(TAG,movieListString);
+            Log.d(TAG, movieListString);
             final String TMDB_RESULTS = "results";
             final String TMDB_IMAGE = "poster_path";
             final String TMDB_TITLE = "title";

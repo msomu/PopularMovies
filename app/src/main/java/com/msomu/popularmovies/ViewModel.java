@@ -17,12 +17,13 @@
 package com.msomu.popularmovies;
 
 public class ViewModel {
+    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
     private String text;
     private String image;
 
     public ViewModel(String text, String image) {
         this.text = text;
-        this.image = image;
+        this.image = IMAGE_BASE_URL + image;
     }
 
     public String getText() {
