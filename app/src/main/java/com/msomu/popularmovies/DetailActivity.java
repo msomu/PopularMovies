@@ -1,11 +1,9 @@
 package com.msomu.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -16,15 +14,14 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        Intent intent = getIntent();
+        ViewModel movie = intent.getParcelableExtra(Intent.EXTRA_TEXT);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (savedInstanceState == null) {
+            DetailActivityFragment fragment = DetailActivityFragment.getInstance(movie);
+            getSupportFragmentManager().beginTransaction().add(R.id.main_container, fragment, null).commit();
+        }
     }
 
 }

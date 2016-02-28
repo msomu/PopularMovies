@@ -13,4 +13,10 @@
     <dimen name="elevation_high">12dp</dimen>
     <dimen name="status_bar_height">25dp</dimen>
     <dimen name="fab_compat_margin">0dp</dimen>
+    <dimen name="detail_title_height">120dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="content_padding">24dp</dimen>
+    <dimen name="detail_image_width">140dp</dimen>
+    <dimen name="detail_image_height">200dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
 </resources>

@@ -105,7 +105,9 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 
     @Override
     public void onItemClick(View view, ViewModel viewModel) {
-        startActivity(new Intent(getActivity(), DetailActivity.class));
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, viewModel);
+        startActivity(intent);
     }
 
     public class FetchMoviesList extends AsyncTask<String, Void, List<ViewModel>> {
@@ -208,13 +210,17 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
             final String TMDB_RESULTS = "results";
             final String TMDB_IMAGE = "poster_path";
             final String TMDB_TITLE = "title";
+            final String TMDB_BG_IMAGE = "backdrop_path";
+            final String TMDB_RELEASE_DATE = "release_date";
+            final String TMDB_VOTE_AVERAGE = "vote_average";
+            final String TMDB_PLOT_SYNOPSIS = "overview";
 
             JSONObject movieListJson = new JSONObject(movieListString);
             JSONArray resultsArray = movieListJson.getJSONArray(TMDB_RESULTS);
             List<ViewModel> movieList = new ArrayList<>();
             for (int i = 0; i < resultsArray.length(); i++) {
                 JSONObject singleMoview = resultsArray.getJSONObject(i);
-                ViewModel viewModel = new ViewModel(singleMoview.getString(TMDB_TITLE), singleMoview.getString(TMDB_IMAGE));
+                ViewModel viewModel = new ViewModel(singleMoview.getString(TMDB_TITLE), singleMoview.getString(TMDB_IMAGE), singleMoview.getString(TMDB_BG_IMAGE), singleMoview.getString(TMDB_RELEASE_DATE), singleMoview.getString(TMDB_VOTE_AVERAGE), singleMoview.getString(TMDB_PLOT_SYNOPSIS));
                 movieList.add(viewModel);
             }
 
