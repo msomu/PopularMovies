@@ -88,5 +88,12 @@
                 android:maxLines="5"
                 android:textSize="14sp" />
         </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trailerRecylerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="100dp" />
+
     </LinearLayout>
 </ScrollView>

@@ -1,9 +1,12 @@
 package com.msomu.popularmovies.detail;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,11 +36,13 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
+public class DetailActivityFragment extends Fragment implements TrailerAdapter.OnItemClickListener {
 
     public final static String EXTRA_DATA = "extra_data";
     private static final String TAG = "DetailActivityFragment";
     private MovieModel mMovie;
+    private List<String> trailersList;
+    private TrailerAdapter trailerAdapter;
 
     public DetailActivityFragment() {
     }
@@ -56,6 +61,7 @@ public class DetailActivityFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             mMovie = args.getParcelable(EXTRA_DATA);
+            trailersList = new ArrayList<>();
             new Fetchtrailers().execute("" + mMovie.getId());
         }
     }
@@ -69,6 +75,11 @@ public class DetailActivityFragment extends Fragment {
         TextView releaseDate = (TextView) rootView.findViewById(R.id.release_date);
         TextView avgRating = (TextView) rootView.findViewById(R.id.rating);
         TextView synopsis = (TextView) rootView.findViewById(R.id.overview);
+        RecyclerView trailers = (RecyclerView) rootView.findViewById(R.id.trailerRecylerView);
+        trailers.setLayoutManager(new LinearLayoutManager(getActivity()));
+        trailerAdapter = new TrailerAdapter(trailersList);
+        trailerAdapter.setOnItemClickListener(this);
+        trailers.setAdapter(trailerAdapter);
 
         if (mMovie != null) {
             if (!TextUtils.isEmpty(mMovie.getBgImage())) {
@@ -88,6 +99,11 @@ public class DetailActivityFragment extends Fragment {
             }
         }
         return rootView;
+    }
+
+    @Override
+    public void onItemClick(View view, String movieModel) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(movieModel)));
     }
 
     public class Fetchtrailers extends AsyncTask<String, Void, Void> {
@@ -180,13 +196,18 @@ public class DetailActivityFragment extends Fragment {
             final String YOUTUBE_URL = "https://www.youtube.com/watch?v=";
             JSONObject trailerListJson = new JSONObject(trailersString);
             JSONArray trailersArray = trailerListJson.getJSONArray(TMDB_RESULTS);
-            List<String> trailersList = new ArrayList<>();
             for (int i = 0; i < trailersArray.length(); i++) {
                 JSONObject singleTrailer = trailersArray.getJSONObject(i);
                 trailersList.add(YOUTUBE_URL + singleTrailer.getString(TMDB_KEY));
                 Log.d(TAG, trailersList.get(i));
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            trailerAdapter.notifyDataSetChanged();
         }
     }
 }
