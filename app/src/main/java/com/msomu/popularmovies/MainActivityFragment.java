@@ -34,8 +34,6 @@ import java.util.List;
 public class MainActivityFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener {
 
     private static final String TAG = "MainActivityFragment";
-    private static final String POPULAR_MOVIES_QUERY = "popularity.desc";
-    private static final String TOP_RATED_MOVIES_QUERY = "vote_average.desc";
     private static List<ViewModel> items = new ArrayList<>();
     private RecyclerViewAdapter adapter;
     private Menu mainFragmentMenu;
@@ -49,7 +47,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     public void onStart() {
         super.onStart();
         setHasOptionsMenu(true);
-        getMoviesList(POPULAR_MOVIES_QUERY);
+        getMoviesList(Utility.getSortPreference(getContext()));
     }
 
     @Override
@@ -74,7 +72,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 //        }
         if(item.getItemId() == R.id.action_settings){
             Log.d(TAG,"Settings Selected");
-            startActivity(new Intent(getActivity(),SettingsActivity.class));
+            startActivity(new Intent(getContext(),SettingsActivity.class));
         }
         return true;
     }
