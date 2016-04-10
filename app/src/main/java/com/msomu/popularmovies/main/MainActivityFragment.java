@@ -1,4 +1,4 @@
-package com.msomu.popularmovies;
+package com.msomu.popularmovies.main;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -14,6 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.msomu.popularmovies.BuildConfig;
+import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.SettingsActivity;
+import com.msomu.popularmovies.Utility;
+import com.msomu.popularmovies.detail.DetailActivity;
+import com.msomu.popularmovies.model.MovieModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +41,7 @@ import java.util.List;
 public class MainActivityFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener {
 
     private static final String TAG = "MainActivityFragment";
-    private static List<ViewModel> items = new ArrayList<>();
+    private static List<MovieModel> items = new ArrayList<>();
     private RecyclerViewAdapter adapter;
     private Menu mainFragmentMenu;
 
@@ -107,17 +114,17 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     }
 
     @Override
-    public void onItemClick(View view, ViewModel viewModel) {
+    public void onItemClick(View view, MovieModel movieModel) {
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, viewModel);
+        intent.putExtra(Intent.EXTRA_TEXT, movieModel);
         startActivity(intent);
     }
 
-    public class FetchMoviesList extends AsyncTask<String, Void, List<ViewModel>> {
+    public class FetchMoviesList extends AsyncTask<String, Void, List<MovieModel>> {
         private final String TAG = FetchMoviesList.class.getSimpleName();
 
         @Override
-        protected void onPostExecute(List<ViewModel> result) {
+        protected void onPostExecute(List<MovieModel> result) {
             if (result != null) {
                 items.clear();
                 items.addAll(result);
@@ -126,7 +133,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
         }
 
         @Override
-        protected List<ViewModel> doInBackground(String... params) {
+        protected List<MovieModel> doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             if (params == null) {
@@ -208,11 +215,12 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
             return null;
         }
 
-        private List<ViewModel> getMovies(String movieListString) throws JSONException {
+        private List<MovieModel> getMovies(String movieListString) throws JSONException {
             Log.d(TAG, movieListString);
             final String TMDB_RESULTS = "results";
             final String TMDB_IMAGE = "poster_path";
             final String TMDB_TITLE = "title";
+            final String TMDB_ID = "id";
             final String TMDB_BG_IMAGE = "backdrop_path";
             final String TMDB_RELEASE_DATE = "release_date";
             final String TMDB_VOTE_AVERAGE = "vote_average";
@@ -220,11 +228,11 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 
             JSONObject movieListJson = new JSONObject(movieListString);
             JSONArray resultsArray = movieListJson.getJSONArray(TMDB_RESULTS);
-            List<ViewModel> movieList = new ArrayList<>();
+            List<MovieModel> movieList = new ArrayList<>();
             for (int i = 0; i < resultsArray.length(); i++) {
                 JSONObject singleMoview = resultsArray.getJSONObject(i);
-                ViewModel viewModel = new ViewModel(singleMoview.getString(TMDB_TITLE), singleMoview.getString(TMDB_IMAGE), singleMoview.getString(TMDB_BG_IMAGE), singleMoview.getString(TMDB_RELEASE_DATE), singleMoview.getString(TMDB_VOTE_AVERAGE), singleMoview.getString(TMDB_PLOT_SYNOPSIS));
-                movieList.add(viewModel);
+                MovieModel movieModel = new MovieModel(singleMoview.getInt(TMDB_ID), singleMoview.getString(TMDB_TITLE), singleMoview.getString(TMDB_IMAGE), singleMoview.getString(TMDB_BG_IMAGE), singleMoview.getString(TMDB_RELEASE_DATE), singleMoview.getString(TMDB_VOTE_AVERAGE), singleMoview.getString(TMDB_PLOT_SYNOPSIS));
+                movieList.add(movieModel);
             }
 
             return movieList;

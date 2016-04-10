@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package com.msomu.popularmovies;
+package com.msomu.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ViewModel implements Parcelable {
+public class MovieModel implements Parcelable {
     public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
-    public static final Creator<ViewModel> CREATOR = new Creator<ViewModel>() {
+    public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
         @Override
-        public ViewModel createFromParcel(Parcel in) {
-            return new ViewModel(in);
+        public MovieModel createFromParcel(Parcel in) {
+            return new MovieModel(in);
         }
 
         @Override
-        public ViewModel[] newArray(int size) {
-            return new ViewModel[size];
+        public MovieModel[] newArray(int size) {
+            return new MovieModel[size];
         }
     };
+    private int id;
     private String text;
     private String image;
     private String bgImage;
@@ -39,7 +40,8 @@ public class ViewModel implements Parcelable {
     private String voteAverage;
     private String plotSynopsis;
 
-    public ViewModel(String text, String image, String bgImage, String releaseDate, String voteAverage, String plotSynopsis) {
+    public MovieModel(int id, String text, String image, String bgImage, String releaseDate, String voteAverage, String plotSynopsis) {
+        this.id = id;
         this.text = text;
         this.image = IMAGE_BASE_URL + image;
         this.bgImage = IMAGE_BASE_URL + bgImage;
@@ -48,7 +50,8 @@ public class ViewModel implements Parcelable {
         this.plotSynopsis = plotSynopsis;
     }
 
-    protected ViewModel(Parcel in) {
+    protected MovieModel(Parcel in) {
+        id = in.readInt();
         text = in.readString();
         image = in.readString();
         bgImage = in.readString();
@@ -112,11 +115,20 @@ public class ViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(text);
         dest.writeString(image);
         dest.writeString(bgImage);
         dest.writeString(releaseDate);
         dest.writeString(voteAverage);
         dest.writeString(plotSynopsis);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -1,9 +1,12 @@
-package com.msomu.popularmovies;
+package com.msomu.popularmovies.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.model.MovieModel;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -15,7 +18,7 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        ViewModel movie = intent.getParcelableExtra(Intent.EXTRA_TEXT);
+        MovieModel movie = intent.getParcelableExtra(Intent.EXTRA_TEXT);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {

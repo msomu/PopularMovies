@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.msomu.popularmovies;
+package com.msomu.popularmovies.main;
 
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -24,16 +24,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.model.MovieModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements View.OnClickListener {
 
-    private List<ViewModel> items;
+    private List<MovieModel> items;
     private OnItemClickListener onItemClickListener;
 
-    public RecyclerViewAdapter(List<ViewModel> items) {
+    public RecyclerViewAdapter(List<MovieModel> items) {
         this.items = items;
     }
 
@@ -50,7 +52,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ViewModel item = items.get(position);
+        MovieModel item = items.get(position);
         holder.text.setText(item.getText());
         holder.image.setImageBitmap(null);
         Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
@@ -69,7 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    onItemClickListener.onItemClick(v, (ViewModel) v.getTag());
+                    onItemClickListener.onItemClick(v, (MovieModel) v.getTag());
                 }
             }, 200);
         }
@@ -77,7 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public interface OnItemClickListener {
 
-        void onItemClick(View view, ViewModel viewModel);
+        void onItemClick(View view, MovieModel movieModel);
 
     }
 

@@ -1,8 +1,10 @@
-package com.msomu.popularmovies;
+package com.msomu.popularmovies.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.msomu.popularmovies.R;
 
 public class MainActivity extends AppCompatActivity {
 
