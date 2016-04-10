@@ -5,11 +5,16 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -43,8 +48,10 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
     private MovieModel mMovie;
     private List<String> trailersList;
     private TrailerAdapter trailerAdapter;
+    private ShareActionProvider mShareActionProvider;
 
     public DetailActivityFragment() {
+        setHasOptionsMenu(true);
     }
 
     public static DetailActivityFragment getInstance(MovieModel movieModel) {
@@ -56,13 +63,20 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.movie_detail_fragment, menu);
+        MenuItem shareTrailerMenuItem = menu.findItem(R.id.share_trailer);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareTrailerMenuItem);
+    }
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
             mMovie = args.getParcelable(EXTRA_DATA);
             trailersList = new ArrayList<>();
-            new Fetchtrailers().execute("" + mMovie.getId());
         }
     }
 
@@ -76,7 +90,7 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
         TextView avgRating = (TextView) rootView.findViewById(R.id.rating);
         TextView synopsis = (TextView) rootView.findViewById(R.id.overview);
         RecyclerView trailers = (RecyclerView) rootView.findViewById(R.id.trailerRecylerView);
-        trailers.setLayoutManager(new LinearLayoutManager(getActivity()));
+        trailers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         trailerAdapter = new TrailerAdapter(trailersList);
         trailerAdapter.setOnItemClickListener(this);
         trailers.setAdapter(trailerAdapter);
@@ -98,12 +112,23 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
                 title.setText(mMovie.getText());
             }
         }
+        new Fetchtrailers().execute("" + mMovie.getId());
         return rootView;
     }
 
     @Override
     public void onItemClick(View view, String movieModel) {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(movieModel)));
+    }
+
+    private void updateShareActionProvider(String trailer) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMovie.getText());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Trailer : " + trailer);
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(sharingIntent);
+        }
     }
 
     public class Fetchtrailers extends AsyncTask<String, Void, Void> {
@@ -207,6 +232,9 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if (trailersList.size() > 0) {
+                updateShareActionProvider(trailersList.get(0));
+            }
             trailerAdapter.notifyDataSetChanged();
         }
     }
