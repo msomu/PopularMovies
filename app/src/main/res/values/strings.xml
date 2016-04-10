@@ -4,4 +4,13 @@
     <string name="most_popular">Most Popular</string>
     <string name="highest_rated">Highest Rated</string>
     <string name="title_activity_detail">Movie</string>
+
+    <string name="pref_sort_label">Sort Order</string>
+    <string name="pref_sort_key">sort</string>
+
+    <string name="pref_sort_label_popular">Most Popular</string>
+    <string name="pref_sort_label_high_rated">High Ratted</string>
+
+    <string name="pref_sort_popular">popular</string>
+    <string name="pref_sort_high_rated">rated</string>
 </resources>
