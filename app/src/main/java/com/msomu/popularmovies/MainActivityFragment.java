@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class MainActivityFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener {
 
+    private static final String TAG = "MainActivityFragment";
     private static final String POPULAR_MOVIES_QUERY = "popularity.desc";
     private static final String TOP_RATED_MOVIES_QUERY = "vote_average.desc";
     private static List<ViewModel> items = new ArrayList<>();
@@ -54,37 +55,41 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         mainFragmentMenu = menu;
-        inflater.inflate(R.menu.fragment_menu, menu);
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_most_popular) {
-            Log.d("MainFragment", "Most Popular clicked");
-            getMoviesList(POPULAR_MOVIES_QUERY);
-            item.setVisible(false);
-
-            return true;
-        } else if (item.getItemId() == R.id.action_highest_rated) {
-            Log.d("MainFragment", "Highest Rated clicked");
-            getMoviesList(TOP_RATED_MOVIES_QUERY);
-            item.setVisible(false);
-            return true;
+//        if (item.getItemId() == R.id.action_most_popular) {
+//            Log.d("MainFragment", "Most Popular clicked");
+//            getMoviesList(POPULAR_MOVIES_QUERY);
+//            item.setVisible(false);
+//
+//            return true;
+//        } else if (item.getItemId() == R.id.action_highest_rated) {
+//            Log.d("MainFragment", "Highest Rated clicked");
+//            getMoviesList(TOP_RATED_MOVIES_QUERY);
+//            item.setVisible(false);
+//            return true;
+//        }
+        if(item.getItemId() == R.id.action_settings){
+            Log.d(TAG,"Settings Selected");
+            startActivity(new Intent(getActivity(),SettingsActivity.class));
         }
         return true;
     }
 
     private void getMoviesList(String query) {
         new FetchMoviesList().execute(query);
-        if (query.equals(POPULAR_MOVIES_QUERY)) {
-            if (mainFragmentMenu != null) {
-                mainFragmentMenu.findItem(R.id.action_highest_rated).setVisible(true);
-            }
-        } else if (query.equals(TOP_RATED_MOVIES_QUERY)) {
-            if (mainFragmentMenu != null) {
-                mainFragmentMenu.findItem(R.id.action_most_popular).setVisible(true);
-            }
-        }
+//        if (query.equals(POPULAR_MOVIES_QUERY)) {
+//            if (mainFragmentMenu != null) {
+//                mainFragmentMenu.findItem(R.id.action_highest_rated).setVisible(true);
+//            }
+//        } else if (query.equals(TOP_RATED_MOVIES_QUERY)) {
+//            if (mainFragmentMenu != null) {
+//                mainFragmentMenu.findItem(R.id.action_most_popular).setVisible(true);
+//            }
+//        }
     }
 
     @Override
