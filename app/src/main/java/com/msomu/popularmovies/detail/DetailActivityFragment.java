@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.msomu.popularmovies.BuildConfig;
 import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.model.MovieModel;
+import com.msomu.popularmovies.model.ReviewsModel;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -46,9 +47,13 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
     public final static String EXTRA_DATA = "extra_data";
     private static final String TAG = "DetailActivityFragment";
     private MovieModel mMovie;
+    private ShareActionProvider mShareActionProvider;
+
     private List<String> trailersList;
     private TrailerAdapter trailerAdapter;
-    private ShareActionProvider mShareActionProvider;
+
+    private List<ReviewsModel> reviewsList;
+    private ReviewsAdapter reviewsAdapter;
 
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
@@ -77,6 +82,7 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
         if (args != null) {
             mMovie = args.getParcelable(EXTRA_DATA);
             trailersList = new ArrayList<>();
+            reviewsList = new ArrayList<>();
         }
     }
 
@@ -89,11 +95,18 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
         TextView releaseDate = (TextView) rootView.findViewById(R.id.release_date);
         TextView avgRating = (TextView) rootView.findViewById(R.id.rating);
         TextView synopsis = (TextView) rootView.findViewById(R.id.overview);
+
         RecyclerView trailers = (RecyclerView) rootView.findViewById(R.id.trailerRecylerView);
         trailers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         trailerAdapter = new TrailerAdapter(trailersList);
         trailerAdapter.setOnItemClickListener(this);
         trailers.setAdapter(trailerAdapter);
+
+        RecyclerView reviews = (RecyclerView) rootView.findViewById(R.id.reviewsrRecylerView);
+        //reviews.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        reviews.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        reviewsAdapter = new ReviewsAdapter(reviewsList);
+        reviews.setAdapter(reviewsAdapter);
 
         if (mMovie != null) {
             if (!TextUtils.isEmpty(mMovie.getBgImage())) {
@@ -113,6 +126,7 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
             }
         }
         new Fetchtrailers().execute("" + mMovie.getId());
+        new Fetchreviews().execute("" + mMovie.getId());
         return rootView;
     }
 
@@ -236,6 +250,113 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
                 updateShareActionProvider(trailersList.get(0));
             }
             trailerAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public class Fetchreviews extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            if (params == null) {
+                return null;
+            }
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            // Will contain the raw JSON response as a string.
+            String trailersString = null;
+            try {
+                // Construct the URL for the OpenWeatherMap query
+                // Possible parameters are avaiable at OWM's forecast API page, at
+                // http://openweathermap.org/API#forecast
+                // String BASE_URL = "https://api.themoviedb.org/3/movie/209112/videos?api_key=5078dce8ec19ba4682df32ed1f7c2726";
+                String movieId = params[0];
+                final String FORECAST_BASE_URL =
+                        "https://api.themoviedb.org/3/movie/" + movieId + "/reviews";
+                final String APPID_PARAM = "api_key";
+                Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+                        .appendQueryParameter(APPID_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                        .build();
+                URL url = new URL(builtUri.toString());
+                Log.v("Detail Fragment", "Built URI " + builtUri.toString());
+
+                // Create the request to OpenWeatherMap, and open the connection
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                // Read the input stream into a String
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                    // But it does make debugging a *lot* easier if you print out the completed
+                    // buffer for debugging.
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    return null;
+                }
+                trailersString = buffer.toString();
+                Log.d("PlaceholderFragment", trailersString);
+            } catch (IOException e) {
+                Log.e("PlaceholderFragment", "Error ", e);
+                // If the code didn't successfully get the weather data, there's no point in attemping
+                // to parse it.
+                return null;
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
+                }
+            }
+            try {
+                return getReviews(trailersString);
+            } catch (JSONException e) {
+                Log.e("ForecastFragment", e.getMessage(), e);
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private Void getReviews(String trailersString) throws JSONException {
+            Log.d(TAG, trailersString);
+            final String TMDB_RESULTS = "results";
+            final String TMDB_AUTHOR = "author";
+            final String TMDB_CONTENT = "content";
+            JSONObject trailerListJson = new JSONObject(trailersString);
+            JSONArray trailersArray = trailerListJson.getJSONArray(TMDB_RESULTS);
+            for (int i = 0; i < trailersArray.length(); i++) {
+                ReviewsModel reviewsModel = new ReviewsModel();
+                JSONObject singleTrailer = trailersArray.getJSONObject(i);
+                reviewsModel.setName(singleTrailer.getString(TMDB_AUTHOR));
+                reviewsModel.setContent(singleTrailer.getString(TMDB_CONTENT));
+                reviewsList.add(reviewsModel);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            reviewsAdapter.notifyDataSetChanged();
         }
     }
 }
