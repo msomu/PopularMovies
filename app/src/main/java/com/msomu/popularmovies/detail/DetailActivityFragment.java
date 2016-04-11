@@ -6,8 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.TextUtils;
 import android.util.Log;
@@ -42,7 +40,7 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment implements TrailerAdapter.OnItemClickListener {
+public class DetailActivityFragment extends Fragment {
 
     public final static String EXTRA_DATA = "extra_data";
     private static final String TAG = "DetailActivityFragment";
@@ -50,10 +48,8 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
     private ShareActionProvider mShareActionProvider;
 
     private List<String> trailersList;
-    private TrailerAdapter trailerAdapter;
 
     private List<ReviewsModel> reviewsList;
-    private ReviewsAdapter reviewsAdapter;
 
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
@@ -90,23 +86,11 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
         ImageView thumb = (ImageView) rootView.findViewById(R.id.thumb);
-        TextView title = (TextView) rootView.findViewById(R.id.title);
         TextView releaseDate = (TextView) rootView.findViewById(R.id.release_date);
         TextView avgRating = (TextView) rootView.findViewById(R.id.rating);
         TextView synopsis = (TextView) rootView.findViewById(R.id.overview);
-
-        RecyclerView trailers = (RecyclerView) rootView.findViewById(R.id.trailerRecylerView);
-        trailers.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        trailerAdapter = new TrailerAdapter(trailersList);
-        trailerAdapter.setOnItemClickListener(this);
-        trailers.setAdapter(trailerAdapter);
-
-        RecyclerView reviews = (RecyclerView) rootView.findViewById(R.id.reviewsrRecylerView);
-        //reviews.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        reviews.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        reviewsAdapter = new ReviewsAdapter(reviewsList);
-        reviews.setAdapter(reviewsAdapter);
 
         if (mMovie != null) {
             if (!TextUtils.isEmpty(mMovie.getBgImage())) {
@@ -121,18 +105,10 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
             if (!TextUtils.isEmpty(mMovie.getPlotSynopsis())) {
                 synopsis.setText(mMovie.getPlotSynopsis());
             }
-            if (!TextUtils.isEmpty(mMovie.getText())) {
-                title.setText(mMovie.getText());
-            }
         }
         new Fetchtrailers().execute("" + mMovie.getId());
         new Fetchreviews().execute("" + mMovie.getId());
         return rootView;
-    }
-
-    @Override
-    public void onItemClick(View view, String movieModel) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(movieModel)));
     }
 
     private void updateShareActionProvider(String trailer) {
@@ -249,7 +225,6 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
             if (trailersList.size() > 0) {
                 updateShareActionProvider(trailersList.get(0));
             }
-            trailerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -356,7 +331,6 @@ public class DetailActivityFragment extends Fragment implements TrailerAdapter.O
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            reviewsAdapter.notifyDataSetChanged();
         }
     }
 }

@@ -191,6 +191,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
                 Log.d("PlaceholderFragment", movieListString);
             } catch (IOException e) {
                 Log.e("PlaceholderFragment", "Error ", e);
+                //TODO Internet check
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
                 return null;

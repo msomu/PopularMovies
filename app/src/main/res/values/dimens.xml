@@ -19,4 +19,5 @@
     <dimen name="detail_image_width">140dp</dimen>
     <dimen name="detail_image_height">200dp</dimen>
     <dimen name="padding_small">8dp</dimen>
+    <dimen name="detail_backdrop_height">256dp</dimen>
 </resources>
