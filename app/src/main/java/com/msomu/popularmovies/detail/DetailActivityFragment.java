@@ -16,12 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.msomu.popularmovies.BuildConfig;
 import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.ViewUtil;
 import com.msomu.popularmovies.model.MovieModel;
 import com.msomu.popularmovies.model.ReviewsModel;
+import com.msomu.popularmovies.model.TrailerModel;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -47,9 +50,10 @@ public class DetailActivityFragment extends Fragment {
     private MovieModel mMovie;
     private ShareActionProvider mShareActionProvider;
 
-    private List<String> trailersList;
+    private List<TrailerModel> trailersList;
 
     private List<ReviewsModel> reviewsList;
+    private LinearLayout trailersLayout, reviewsLayout;
 
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
@@ -91,7 +95,8 @@ public class DetailActivityFragment extends Fragment {
         TextView releaseDate = (TextView) rootView.findViewById(R.id.release_date);
         TextView avgRating = (TextView) rootView.findViewById(R.id.rating);
         TextView synopsis = (TextView) rootView.findViewById(R.id.overview);
-
+        trailersLayout = (LinearLayout) rootView.findViewById(R.id.layoutTrailers);
+        reviewsLayout = (LinearLayout) rootView.findViewById(R.id.layoutReviews);
         if (mMovie != null) {
             if (!TextUtils.isEmpty(mMovie.getBgImage())) {
                 Picasso.with(thumb.getContext()).load(mMovie.getBgImage()).placeholder(R.mipmap.place_hodler).into(thumb);
@@ -142,7 +147,7 @@ public class DetailActivityFragment extends Fragment {
                 // String BASE_URL = "https://api.themoviedb.org/3/movie/209112/videos?api_key=5078dce8ec19ba4682df32ed1f7c2726";
                 String movieId = params[0];
                 final String FORECAST_BASE_URL =
-                        "https://api.themoviedb.org/3/movie/" + movieId + "/videos";
+                        "https://api.themoviedb.org/3/movie/" + movieId + "/trailers";
                 final String APPID_PARAM = "api_key";
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                         .appendQueryParameter(APPID_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
@@ -206,15 +211,17 @@ public class DetailActivityFragment extends Fragment {
 
         private Void getTrailers(String trailersString) throws JSONException {
             Log.d(TAG, trailersString);
-            final String TMDB_RESULTS = "results";
-            final String TMDB_KEY = "key";
-            final String YOUTUBE_URL = "https://www.youtube.com/watch?v=";
+            final String TMDB_RESULTS = "youtube";
+            final String TMDB_KEY = "source";
+            final String TMDB_NAME = "name";
             JSONObject trailerListJson = new JSONObject(trailersString);
             JSONArray trailersArray = trailerListJson.getJSONArray(TMDB_RESULTS);
             for (int i = 0; i < trailersArray.length(); i++) {
                 JSONObject singleTrailer = trailersArray.getJSONObject(i);
-                trailersList.add(YOUTUBE_URL + singleTrailer.getString(TMDB_KEY));
-                Log.d(TAG, trailersList.get(i));
+                TrailerModel trailerModel = new TrailerModel();
+                trailerModel.setName(singleTrailer.getString(TMDB_NAME));
+                trailerModel.setSource(singleTrailer.getString(TMDB_KEY));
+                trailersList.add(trailerModel);
             }
             return null;
         }
@@ -223,7 +230,10 @@ public class DetailActivityFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (trailersList.size() > 0) {
-                updateShareActionProvider(trailersList.get(0));
+                updateShareActionProvider(trailersList.get(0).getSource());
+            }
+            for (TrailerModel trailer : trailersList) {
+                trailersLayout.addView(ViewUtil.createTrailerLayout(getContext(), trailer.getName(), trailer.getSource()));
             }
         }
     }
@@ -331,6 +341,11 @@ public class DetailActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            for (ReviewsModel reviewsModel :
+                    reviewsList) {
+                reviewsLayout.addView(ViewUtil.createReviewLayout(getContext(), reviewsModel.getName(), reviewsModel.getContent()));
+                reviewsLayout.addView(ViewUtil.getLineView(getContext()));
+            }
         }
     }
 }
