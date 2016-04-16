@@ -20,6 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.msomu.popularmovies.data.MoviesContract.ImageEntry;
 import com.msomu.popularmovies.data.MoviesContract.MoviesEntry;
 
 /**
@@ -41,6 +42,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + MoviesEntry.TABLE_NAME + " (" +
                 MoviesEntry._ID + " INTEGER PRIMARY KEY," +
+                MoviesEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL," +
                 MoviesEntry.COLUMN_MOVIE_NAME + " INTEGER NOT NULL," +
                 MoviesEntry.COLUMN_MOVIE_IMAGE_URL + " TEXT NULL," +
                 MoviesEntry.COLUMN_MOVIE_IMAGE + " TEXT NULL," +
@@ -51,8 +53,16 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 MoviesEntry.COLUMN_MOVIE_DESCRIPTION + " TEXT NULL" +
                 " );";
 
+        final String SQL_IMAGE_TABLE = "CREATE TABLE " + ImageEntry.TABLE_NAME + " (" +
+                ImageEntry._ID + " INTEGER PRIMARY KEY," +
+                ImageEntry.COLUMN_URL + " TEXT NOT NULL," +
+                ImageEntry.COLUMN_IMAGE + " BLOB  NULL" +
+                " );";
+
         Log.d(TAG, SQL_CREATE_MOVIE_TABLE);
+        Log.d(TAG, SQL_IMAGE_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
+        sqLiteDatabase.execSQL(SQL_IMAGE_TABLE);
     }
 
     @Override
@@ -64,6 +74,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
         // If you want to update the schema without wiping data, commenting out the next 2 lines
         // should be your top priority before modifying this method.
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MoviesEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ImageEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

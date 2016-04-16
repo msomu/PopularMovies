@@ -65,7 +65,7 @@ public class MovieModel implements Parcelable {
     }
 
     public static MovieModel from(Cursor cursor) {
-        int id = cursor.getInt(MainActivityFragment.COL_ID);
+        int id = cursor.getInt(MainActivityFragment.COL_MOVIE_ID);
         String text = cursor.getString(MainActivityFragment.COL_MOVIE_NAME);
         String image = cursor.getString(MainActivityFragment.COL_MOVIE_IMAGE_URL);
         String bgimage = cursor.getString(MainActivityFragment.COL_MOVIE_BG_IMAGE_URL);

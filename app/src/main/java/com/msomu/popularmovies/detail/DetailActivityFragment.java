@@ -21,11 +21,11 @@ import android.widget.TextView;
 
 import com.msomu.popularmovies.BuildConfig;
 import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.Utility;
 import com.msomu.popularmovies.ViewUtil;
 import com.msomu.popularmovies.model.MovieModel;
 import com.msomu.popularmovies.model.ReviewsModel;
 import com.msomu.popularmovies.model.TrailerModel;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,7 +99,8 @@ public class DetailActivityFragment extends Fragment {
         reviewsLayout = (LinearLayout) rootView.findViewById(R.id.layoutReviews);
         if (mMovie != null) {
             if (!TextUtils.isEmpty(mMovie.getBgImage())) {
-                Picasso.with(thumb.getContext()).load(mMovie.getBgImage()).placeholder(R.mipmap.place_hodler).into(thumb);
+                // Picasso.with(thumb.getContext()).load(mMovie.getBgImage()).placeholder(R.mipmap.place_hodler).into(thumb);
+                Utility.renderImage(getContext(), mMovie.getBgImage(), thumb);
             }
             if (!TextUtils.isEmpty(mMovie.getReleaseDate())) {
                 releaseDate.setText(mMovie.getReleaseDate());

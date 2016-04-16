@@ -39,12 +39,14 @@ public class MoviesContract {
     // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
     // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
     public static final String PATH_MOVIES = "movies";
+    public static final String PATH_IMAGES = "images";
 
     /* Inner class that defines the table contents of the weather table */
     public static final class MoviesEntry implements BaseColumns {
 
         public static final String TABLE_NAME = "movies";
 
+        public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_MOVIE_NAME = "movie_name";
         public static final String COLUMN_MOVIE_IMAGE_URL = "movie_image_url";
         public static final String COLUMN_MOVIE_IMAGE = "movie_image";
@@ -64,6 +66,26 @@ public class MoviesContract {
 
         public static Uri buildMovieUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static class ImageEntry implements BaseColumns {
+        public static final String TABLE_NAME = "images";
+        public static final String COLUMN_URL = "image_url";
+        public static final String COLUMN_IMAGE = "image";
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_IMAGES).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_IMAGES;
+
+        public static Uri buildImageUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildImage(String url) {
+            return CONTENT_URI.buildUpon().appendPath(url).build();
         }
     }
 }

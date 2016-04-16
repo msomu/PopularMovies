@@ -8,8 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 
 import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.Utility;
 import com.msomu.popularmovies.model.MovieModel;
-import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -39,7 +39,8 @@ public class DetailActivity extends AppCompatActivity {
 
     private void loadBackdrop(MovieModel movie) {
         final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-        Picasso.with(this).load(movie.getImage()).into(imageView);
+        //Picasso.with(this).load(movie.getImage()).into(imageView);
+        Utility.renderImage(this, movie.getImage(), imageView);
     }
 
 }

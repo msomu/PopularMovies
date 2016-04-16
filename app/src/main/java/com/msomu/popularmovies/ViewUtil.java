@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 
 /**
  * Created by msomu on 12/04/16.
@@ -45,7 +44,8 @@ public class ViewUtil {
         textView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         linearLayout.addView(textView);
         //imageLoader.get("http://img.youtube.com/vi/" + source + "/0.jpg", ImageLoader.getImageListener(adjustableImageView, R.drawable.loading_trailer, R.drawable.error_trailer));
-        Picasso.with(context).load("http://img.youtube.com/vi/" + source + "/0.jpg").into(adjustableImageView);
+        //  Picasso.with(context).load("http://img.youtube.com/vi/" + source + "/0.jpg").into(adjustableImageView);
+        Utility.renderImage(context, "http://img.youtube.com/vi/" + source + "/0.jpg", adjustableImageView);
         return linearLayout;
     }
 

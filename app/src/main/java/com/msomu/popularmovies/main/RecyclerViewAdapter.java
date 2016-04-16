@@ -28,15 +28,17 @@ import android.widget.TextView;
 
 import com.msomu.popularmovies.CursorRecyclerViewAdapter;
 import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.Utility;
 import com.msomu.popularmovies.model.MovieModel;
-import com.squareup.picasso.Picasso;
 
 public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewAdapter.ViewHolder> implements View.OnClickListener {
 
     private OnItemClickListener onItemClickListener;
+    private Context context;
 
     public RecyclerViewAdapter(Context context, Cursor c) {
         super(context, c);
+        this.context = context;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -64,7 +66,8 @@ public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewA
         MovieModel item = MovieModel.from(cursor);
         holder.text.setText(item.getText());
         holder.image.setImageBitmap(null);
-        Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
+        //Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
+        Utility.renderImage(context, item.getImage(), holder.image);
         holder.itemView.setTag(item);
     }
 

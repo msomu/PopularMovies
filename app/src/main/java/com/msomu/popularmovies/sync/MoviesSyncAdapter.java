@@ -260,6 +260,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             MovieModel movieModel = new MovieModel(singleMoview.getInt(TMDB_ID), singleMoview.getString(TMDB_TITLE), singleMoview.getString(TMDB_IMAGE), singleMoview.getString(TMDB_BG_IMAGE), singleMoview.getString(TMDB_RELEASE_DATE), singleMoview.getString(TMDB_VOTE_AVERAGE), singleMoview.getString(TMDB_PLOT_SYNOPSIS));
             ContentValues movieValues = new ContentValues();
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_NAME, movieModel.getText());
+            movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_ID, movieModel.getId());
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_IMAGE_URL, movieModel.getImage());
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_IMAGE, "");
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_BG_IMAGE, "");

@@ -26,6 +26,7 @@ import android.net.Uri;
 public class MoviesProvider extends ContentProvider {
 
     static final int MOVIES = 100;
+    static final int IMAGES = 200;
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -45,6 +46,7 @@ public class MoviesProvider extends ContentProvider {
         // 2) Use the addURI function to match each of the types.  Use the constants from
         // MoviesContract to help define the types to the UriMatcher.
         matcher.addURI(authority, MoviesContract.PATH_MOVIES, MOVIES);
+        matcher.addURI(authority, MoviesContract.PATH_IMAGES, IMAGES);
         // 3) Return the new matcher!
         return matcher;
     }
@@ -74,6 +76,8 @@ public class MoviesProvider extends ContentProvider {
             // Student: Uncomment and fill out these two cases
             case MOVIES:
                 return MoviesContract.MoviesEntry.CONTENT_TYPE;
+            case IMAGES:
+                return MoviesContract.ImageEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -91,7 +95,10 @@ public class MoviesProvider extends ContentProvider {
                 retCursor = mOpenHelper.getReadableDatabase().query(MoviesContract.MoviesEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
-
+            case IMAGES: {
+                retCursor = mOpenHelper.getReadableDatabase().query(MoviesContract.ImageEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -111,6 +118,14 @@ public class MoviesProvider extends ContentProvider {
         switch (match) {
             case MOVIES: {
                 long _id = db.insert(MoviesContract.MoviesEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = MoviesContract.MoviesEntry.buildMovieUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case IMAGES: {
+                long _id = db.insert(MoviesContract.ImageEntry.TABLE_NAME, null, values);
                 if (_id > 0)
                     returnUri = MoviesContract.MoviesEntry.buildMovieUri(_id);
                 else
@@ -143,6 +158,10 @@ public class MoviesProvider extends ContentProvider {
                 rowsDeleted = db.delete(MoviesContract.MoviesEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
+            case IMAGES: {
+                rowsDeleted = db.delete(MoviesContract.ImageEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -173,6 +192,10 @@ public class MoviesProvider extends ContentProvider {
         switch (match) {
             case MOVIES: {
                 rowsUpdated = db.update(MoviesContract.MoviesEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            }
+            case IMAGES: {
+                rowsUpdated = db.update(MoviesContract.ImageEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             }
             default:

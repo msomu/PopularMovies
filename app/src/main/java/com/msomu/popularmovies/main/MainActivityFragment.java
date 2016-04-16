@@ -35,15 +35,17 @@ import java.util.List;
 public class MainActivityFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int COL_ID = 0;
-    public static final int COL_MOVIE_NAME = 1;
-    public static final int COL_MOVIE_IMAGE_URL = 2;
-    public static final int COL_MOVIE_BG_IMAGE_URL = 3;
-    public static final int COL_MOVIE_RELEASE_DATE = 4;
-    public static final int COL_MOVIE_VOTE = 5;
-    public static final int COL_MOVIE_DESCRIPTIO = 6;
+    public static final int COL_MOVIE_ID = 1;
+    public static final int COL_MOVIE_NAME = 2;
+    public static final int COL_MOVIE_IMAGE_URL = 3;
+    public static final int COL_MOVIE_BG_IMAGE_URL = 4;
+    public static final int COL_MOVIE_RELEASE_DATE = 5;
+    public static final int COL_MOVIE_VOTE = 6;
+    public static final int COL_MOVIE_DESCRIPTIO = 7;
     private static final String TAG = "MainActivityFragment";
     private static final String[] FORECAST_COLUMNS = {
             MoviesContract.MoviesEntry._ID,
+            MoviesContract.MoviesEntry.COLUMN_MOVIE_ID,
             MoviesContract.MoviesEntry.COLUMN_MOVIE_NAME,
             MoviesContract.MoviesEntry.COLUMN_MOVIE_IMAGE_URL,
             MoviesContract.MoviesEntry.COLUMN_MOVIE_BG_IMAGE_URL,
@@ -134,10 +136,10 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         Uri weatherForLocationUri = MoviesContract.MoviesEntry.CONTENT_URI;
-        String sortOrder = MoviesContract.MoviesEntry.COLUMN_MOVIE_RELEASE_DATE + " ASC";
+        //String sortOrder = MoviesContract.MoviesEntry.COLUMN_MOVIE_RELEASE_DATE + " ASC";
 //        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri,
 //                null, null, null, sortOrder);
-        return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, sortOrder);
+        return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, null);
     }
 
     @Override
