@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.sync.MoviesSyncAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+        MoviesSyncAdapter.initializeSyncAdapter(this);
     }
 
 //    @Override
