@@ -16,10 +16,14 @@
 
 package com.msomu.popularmovies.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.msomu.popularmovies.main.MainActivityFragment;
+
 public class MovieModel implements Parcelable {
+
     public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
     public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
         @Override
@@ -58,6 +62,18 @@ public class MovieModel implements Parcelable {
         releaseDate = in.readString();
         voteAverage = in.readString();
         plotSynopsis = in.readString();
+    }
+
+    public static MovieModel from(Cursor cursor) {
+        int id = cursor.getInt(MainActivityFragment.COL_ID);
+        String text = cursor.getString(MainActivityFragment.COL_MOVIE_NAME);
+        String image = cursor.getString(MainActivityFragment.COL_MOVIE_IMAGE_URL);
+        String bgimage = cursor.getString(MainActivityFragment.COL_MOVIE_BG_IMAGE_URL);
+        String releaseDate = cursor.getString(MainActivityFragment.COL_MOVIE_RELEASE_DATE);
+        String voteAverage = cursor.getString(MainActivityFragment.COL_MOVIE_VOTE);
+        String plotSynopsis = cursor.getString(MainActivityFragment.COL_MOVIE_DESCRIPTIO);
+        MovieModel movieModel = new MovieModel(id, text, image, bgimage, releaseDate, voteAverage, plotSynopsis);
+        return movieModel;
     }
 
     public String getPlotSynopsis() {

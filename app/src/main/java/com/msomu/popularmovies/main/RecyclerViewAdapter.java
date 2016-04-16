@@ -16,6 +16,8 @@
 
 package com.msomu.popularmovies.main;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,19 +26,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.msomu.popularmovies.CursorRecyclerViewAdapter;
 import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.model.MovieModel;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewAdapter.ViewHolder> implements View.OnClickListener {
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements View.OnClickListener {
-
-    private List<MovieModel> items;
     private OnItemClickListener onItemClickListener;
 
-    public RecyclerViewAdapter(List<MovieModel> items) {
-        this.items = items;
+    public RecyclerViewAdapter(Context context, Cursor c) {
+        super(context, c);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -50,18 +50,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return new ViewHolder(v);
     }
 
+//    @Override
+//    public void onBindViewHolder(ViewHolder holder, int position) {
+//        MovieModel item = items.get(position);
+//        holder.text.setText(item.getText());
+//        holder.image.setImageBitmap(null);
+//        Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
+//        holder.itemView.setTag(item);
+//    }
+
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        MovieModel item = items.get(position);
+    public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
+        MovieModel item = MovieModel.from(cursor);
         holder.text.setText(item.getText());
         holder.image.setImageBitmap(null);
         Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
         holder.itemView.setTag(item);
-    }
-
-    @Override
-    public int getItemCount() {
-        return items.size();
     }
 
     @Override

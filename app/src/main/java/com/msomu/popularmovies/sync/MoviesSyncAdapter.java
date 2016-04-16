@@ -273,6 +273,12 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         int inserted = 0;
         // add to database
         if (cVVector.size() > 0) {
+            for (int i = 0; i < cVVector.size(); i++) {
+                getContext().getContentResolver().delete(MoviesContract.MoviesEntry.CONTENT_URI,
+                        MoviesContract.MoviesEntry.COLUMN_MOVIE_NAME + "== ?",
+                        new String[]{cVVector.get(i).getAsString(MoviesContract.MoviesEntry.COLUMN_MOVIE_NAME)});
+            }
+
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
             inserted = getContext().getContentResolver().bulkInsert(MoviesContract.MoviesEntry.CONTENT_URI, cvArray);
