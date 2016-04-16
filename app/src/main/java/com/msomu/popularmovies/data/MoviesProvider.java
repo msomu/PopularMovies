@@ -185,14 +185,6 @@ public class MoviesProvider extends ContentProvider {
         return rowsUpdated;
     }
 
-    private void normalizeDate(ContentValues values) {
-        // normalize the date value
-        if (values.containsKey(MoviesContract.MoviesEntry.COLUMN_MOVIE_RELEASE_DATE)) {
-            long dateValue = values.getAsLong(MoviesContract.MoviesEntry.COLUMN_MOVIE_RELEASE_DATE);
-            values.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_RELEASE_DATE, MoviesContract.normalizeDate(dateValue));
-        }
-    }
-
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -203,7 +195,6 @@ public class MoviesProvider extends ContentProvider {
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        normalizeDate(value);
                         long _id = db.insert(MoviesContract.MoviesEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;

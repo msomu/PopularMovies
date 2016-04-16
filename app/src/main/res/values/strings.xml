@@ -17,5 +17,6 @@
 
     <string name="sync_account_type">popularmovies.msomu.com</string>
     <string name="content_authority">com.msomu.popularmovies</string>
+    <string name="action_refresh">Refresh</string>
 
 </resources>

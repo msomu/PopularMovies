@@ -46,7 +46,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 MoviesEntry.COLUMN_MOVIE_IMAGE + " TEXT NULL," +
                 MoviesEntry.COLUMN_MOVIE_BG_IMAGE + " TEXT NULL," +
                 MoviesEntry.COLUMN_MOVIE_BG_IMAGE_URL + " TEXT NULL," +
-                MoviesEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT NULL," +
+                MoviesEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL," +
                 MoviesEntry.COLUMN_MOVIE_VOTE + " TEXT NULL," +
                 MoviesEntry.COLUMN_MOVIE_DESCRIPTION + " TEXT NULL" +
                 " );";
