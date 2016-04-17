@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 
 import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.SettingsActivity;
+import com.msomu.popularmovies.Utility;
 import com.msomu.popularmovies.data.MoviesContract;
 import com.msomu.popularmovies.detail.DetailActivity;
 import com.msomu.popularmovies.model.MovieModel;
@@ -136,10 +137,20 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         Uri weatherForLocationUri = MoviesContract.MoviesEntry.CONTENT_URI;
-        //String sortOrder = MoviesContract.MoviesEntry.COLUMN_MOVIE_RELEASE_DATE + " ASC";
+        String sortPreference = Utility.getSortPreference(getContext());
+        String sort;
+        if (sortPreference.equals(getString(R.string.pref_sort_fav))) {
+            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, null);
+        } else if (sortPreference.equals(getString(R.string.pref_sort_high_rated))) {
+            sort = MoviesContract.MoviesEntry.COLUMN_MOVIE_VOTE + " ASC";
+            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, sort);
+        } else {
+            //popular
+            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, null);
+        }
 //        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri,
 //                null, null, null, sortOrder);
-        return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, null);
+
     }
 
     @Override

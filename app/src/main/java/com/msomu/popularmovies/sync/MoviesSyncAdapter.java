@@ -268,6 +268,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_RELEASE_DATE, movieModel.getReleaseDate());
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_VOTE, movieModel.getVoteAverage());
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_DESCRIPTION, movieModel.getPlotSynopsis());
+            movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV, 0);
 
             cVVector.add(movieValues);
         }

@@ -51,6 +51,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 MoviesEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL," +
                 MoviesEntry.COLUMN_MOVIE_VOTE + " TEXT NULL," +
                 MoviesEntry.COLUMN_MOVIE_DESCRIPTION + " TEXT NULL" +
+                MoviesEntry.COLUMN_MOVIE_FAV + " INTEGER NOT NULL" +
                 " );";
 
         final String SQL_IMAGE_TABLE = "CREATE TABLE " + ImageEntry.TABLE_NAME + " (" +

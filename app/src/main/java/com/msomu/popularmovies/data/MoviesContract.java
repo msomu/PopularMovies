@@ -55,6 +55,7 @@ public class MoviesContract {
         public static final String COLUMN_MOVIE_RELEASE_DATE = "movie_release_date";
         public static final String COLUMN_MOVIE_VOTE = "movie_vote";
         public static final String COLUMN_MOVIE_DESCRIPTION = "movie_description";
+        public static final String COLUMN_MOVIE_FAV = "movie_fav";
 
 
         public static final Uri CONTENT_URI =

@@ -10,9 +10,11 @@
 
     <string name="pref_sort_label_popular">Most Popular</string>
     <string name="pref_sort_label_high_rated">High Ratted</string>
+    <string name="pref_sort_label_fav">Favourite</string>
 
     <string name="pref_sort_popular">popular</string>
     <string name="pref_sort_high_rated">rated</string>
+    <string name="pref_sort_fav">fav</string>
     <string name="share">Share</string>
 
     <string name="sync_account_type">popularmovies.msomu.com</string>
