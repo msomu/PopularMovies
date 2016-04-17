@@ -34,10 +34,10 @@
 
 
             <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/padding_normal"
                 android:orientation="horizontal">
 
@@ -51,8 +51,8 @@
 
 
                 <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/content_padding"
                     android:orientation="vertical">
 
@@ -68,12 +68,17 @@
                     <TextView
                         android:id="@+id/rating"
                         android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/padding_small"
                         android:text="8.1/10"
                         android:textColor="@android:color/black" />
 
-
+                    <Button
+                        android:id="@+id/fav"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/fab_margin"
+                        android:text="Favourite" />
                 </LinearLayout>
             </LinearLayout>
 

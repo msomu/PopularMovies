@@ -1,6 +1,8 @@
 package com.msomu.popularmovies.detail;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +26,7 @@ import com.msomu.popularmovies.BuildConfig;
 import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.Utility;
 import com.msomu.popularmovies.ViewUtil;
+import com.msomu.popularmovies.data.MoviesContract;
 import com.msomu.popularmovies.model.MovieModel;
 import com.msomu.popularmovies.model.ReviewsModel;
 import com.msomu.popularmovies.model.TrailerModel;
@@ -47,11 +51,10 @@ public class DetailActivityFragment extends Fragment {
 
     public final static String EXTRA_DATA = "extra_data";
     private static final String TAG = "DetailActivityFragment";
+    int fav;
     private MovieModel mMovie;
     private ShareActionProvider mShareActionProvider;
-
     private List<TrailerModel> trailersList;
-
     private List<ReviewsModel> reviewsList;
     private LinearLayout trailersLayout, reviewsLayout;
 
@@ -97,6 +100,32 @@ public class DetailActivityFragment extends Fragment {
         TextView synopsis = (TextView) rootView.findViewById(R.id.overview);
         trailersLayout = (LinearLayout) rootView.findViewById(R.id.layoutTrailers);
         reviewsLayout = (LinearLayout) rootView.findViewById(R.id.layoutReviews);
+        final Button favourite = (Button) rootView.findViewById(R.id.fav);
+        Cursor query = getContext().getContentResolver().query(MoviesContract.MoviesEntry.CONTENT_URI, new String[]{MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV}, MoviesContract.MoviesEntry.COLUMN_MOVIE_ID + " == ?", new String[]{"" + mMovie.getId()}, null);
+        if (query.moveToFirst()) {
+            fav = query.getInt(query.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV));
+        }
+        if (fav != 0) {
+            favourite.setText("Un Favourite");
+        } else {
+            favourite.setText("Favourite");
+        }
+        favourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues contentValues = new ContentValues();
+                if (fav != 0) {
+                    fav = 0;
+                    contentValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV, 0);
+                    favourite.setText("Favourite");
+                } else {
+                    fav = 1;
+                    contentValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV, 1);
+                    favourite.setText("Un Favourite");
+                }
+                getContext().getContentResolver().update(MoviesContract.MoviesEntry.CONTENT_URI, contentValues, MoviesContract.MoviesEntry.COLUMN_MOVIE_ID + " == ?", new String[]{"" + mMovie.getId()});
+            }
+        });
         if (mMovie != null) {
             if (!TextUtils.isEmpty(mMovie.getBgImage())) {
                 // Picasso.with(thumb.getContext()).load(mMovie.getBgImage()).placeholder(R.mipmap.place_hodler).into(thumb);
