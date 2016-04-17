@@ -335,7 +335,12 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 updateShareActionProvider(trailersList.get(0).getSource());
             }
             for (TrailerModel trailer : trailersList) {
-                trailersLayout.addView(ViewUtil.createTrailerLayout(getContext(), trailer.getName(), trailer.getSource()));
+                if (trailersLayout != null) {
+                    LinearLayout trailerLayout = ViewUtil.createTrailerLayout(getContext(), trailer.getName(), trailer.getSource());
+                    if (trailerLayout != null) {
+                        trailersLayout.addView(trailerLayout);
+                    }
+                }
             }
         }
     }
@@ -445,8 +450,14 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             super.onPostExecute(aVoid);
             for (ReviewsModel reviewsModel :
                     reviewsList) {
-                reviewsLayout.addView(ViewUtil.createReviewLayout(getContext(), reviewsModel.getName(), reviewsModel.getContent()));
-                reviewsLayout.addView(ViewUtil.getLineView(getContext()));
+                if (reviewsLayout != null) {
+                    LinearLayout reviewLayout = ViewUtil.createReviewLayout(getContext(), reviewsModel.getName(), reviewsModel.getContent());
+                    View lineView = ViewUtil.getLineView(getContext());
+                    if (reviewLayout != null && lineView != null) {
+                        reviewsLayout.addView(reviewLayout);
+                        reviewsLayout.addView(lineView);
+                    }
+                }
             }
         }
     }

@@ -54,7 +54,7 @@ public class ViewUtil {
     }
 
     public static LinearLayout createReviewLayout(Context context, String author, final String content) {
-        if (content != null) {
+        if (context != null) {
             TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.gravity = Gravity.CENTER;
             LinearLayout linearLayout = new LinearLayout(context);
@@ -82,10 +82,14 @@ public class ViewUtil {
     }
 
     public static View getLineView(Context context) {
-        View view = new View(context);
-        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        view.setBackgroundColor(Color.GRAY);
-        view.setMinimumHeight(2);
-        return view;
+        if (context != null) {
+            View view = new View(context);
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            view.setBackgroundColor(Color.GRAY);
+            view.setMinimumHeight(2);
+            return view;
+        } else {
+            return null;
+        }
     }
 }
