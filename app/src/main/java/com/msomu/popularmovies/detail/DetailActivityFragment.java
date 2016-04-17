@@ -169,6 +169,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(TAG, "On Finsihed called");
         if (data != null && data.moveToFirst()) {
             mMovie = new MovieModel();
             mMovie.setBgImage(data.getString(COL_MOVIE_BG_IMAGE_URL));

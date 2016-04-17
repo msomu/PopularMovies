@@ -22,6 +22,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 public class MoviesProvider extends ContentProvider {
 
@@ -54,6 +55,10 @@ public class MoviesProvider extends ContentProvider {
         matcher.addURI(authority, MoviesContract.PATH_MOVIES + "/#", MOVIES_WITH_ID);
         // 3) Return the new matcher!
         return matcher;
+    }
+
+    public static String getIdFromMoviesUri(Uri uri) {
+        return uri.getPathSegments().get(1);
     }
 
     /*
@@ -107,7 +112,7 @@ public class MoviesProvider extends ContentProvider {
                 break;
             }
             case MOVIES_WITH_ID: {
-                retCursor = mOpenHelper.getReadableDatabase().query(MoviesContract.MoviesEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                retCursor = getMoviesById(uri, projection);
                 break;
             }
             default:
@@ -115,6 +120,12 @@ public class MoviesProvider extends ContentProvider {
         }
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
+    }
+
+    private Cursor getMoviesById(Uri uri, String[] projection) {
+        String id = getIdFromMoviesUri(uri);
+        Log.d("ID", id);
+        return mOpenHelper.getReadableDatabase().query(MoviesContract.MoviesEntry.TABLE_NAME, projection, MoviesContract.MoviesEntry._ID + " == ?", new String[]{id}, null, null, null);
     }
 
     /*
