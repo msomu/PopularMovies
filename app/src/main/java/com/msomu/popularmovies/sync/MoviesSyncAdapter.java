@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -268,7 +269,19 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_RELEASE_DATE, movieModel.getReleaseDate());
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_VOTE, movieModel.getVoteAverage());
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_DESCRIPTION, movieModel.getPlotSynopsis());
-            movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV, 0);
+            Cursor query = getContext().getContentResolver().query(MoviesContract.MoviesEntry.CONTENT_URI, new String[]{MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV}, MoviesContract.MoviesEntry.COLUMN_MOVIE_ID + " == ?", new String[]{"" + movieModel.getId()}, null);
+            int fav;
+            if (query.moveToFirst()) {
+                fav = query.getInt(query.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV));
+                if (fav != 0) {
+                    movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV, 1);
+                } else {
+                    movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV, 0);
+                }
+            } else {
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV, 0);
+            }
+
             String sort = Utility.getSortValue(getContext());
             if (sort.equals(getContext().getString(R.string.pref_sort_high_rated))) {
                 movieValues.put(MoviesContract.MoviesEntry.COLUMN_AVG, 1);
