@@ -59,6 +59,7 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     private RecyclerViewAdapter adapter;
     private View rootView;
     private Cursor cursor;
+    private String mSortPreference;
 
     public MainActivityFragment() {
     }
@@ -89,9 +90,9 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 //            item.setVisible(false);
 //            return true;
 //        }
-        if(item.getItemId() == R.id.action_settings){
-            Log.d(TAG,"Settings Selected");
-            startActivity(new Intent(getContext(),SettingsActivity.class));
+        if (item.getItemId() == R.id.action_settings) {
+            Log.d(TAG, "Settings Selected");
+            startActivity(new Intent(getContext(), SettingsActivity.class));
         }
         if (item.getItemId() == R.id.action_refresh) {
             Log.d(TAG, "Refresh Selected");
@@ -133,17 +134,28 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
         super.onActivityCreated(savedInstanceState);
     }
 
+    // since we read the location when we create the loader, all we need to do is restart things
+    void onLocationChanged() {
+        mSortPreference = Utility.getSortValue(getContext());
+        if (!mSortPreference.equals(getString(R.string.pref_sort_fav))) {
+            MoviesSyncAdapter.syncImmediately(getActivity());
+        }
+        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
+        mSortPreference = Utility.getSortValue(getContext());
         Uri weatherForLocationUri = MoviesContract.MoviesEntry.CONTENT_URI;
-        String sortPreference = Utility.getSortPreference(getContext());
-        if (sortPreference.equals(getString(R.string.pref_sort_fav))) {
+        if (mSortPreference.equals(getString(R.string.pref_sort_fav))) {
+            Log.d(TAG, "Favourite");
             return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV + " == ?", new String[]{"1"}, null);
-        } else if (sortPreference.equals(getString(R.string.pref_sort_high_rated))) {
+        } else if (mSortPreference.equals(getString(R.string.pref_sort_high_rated))) {
+            Log.d(TAG, "Rated");
             return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, MoviesContract.MoviesEntry.COLUMN_AVG + " == ?", new String[]{"1"}, null);
         } else {
             //popular
+            Log.d(TAG, "Popular");
             return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, MoviesContract.MoviesEntry.COLUMN_POPULAR + " == ?", new String[]{"1"}, null);
         }
 //        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri,

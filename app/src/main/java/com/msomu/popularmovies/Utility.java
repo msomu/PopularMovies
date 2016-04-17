@@ -29,6 +29,13 @@ public class Utility {
                 .equals(context.getString(R.string.pref_sort_popular));
     }
 
+    public static boolean isFav(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(context.getString(R.string.pref_sort_key),
+                context.getString(R.string.pref_sort_fav))
+                .equals(context.getString(R.string.pref_sort_fav));
+    }
+
     public static String getSortPreference(Context context) {
         if (isMostPopular(context)) {
             return POPULAR_MOVIES_QUERY;
@@ -36,6 +43,17 @@ public class Utility {
             return TOP_RATED_MOVIES_QUERY;
         }
     }
+
+    public static String getSortValue(Context context) {
+        if (isMostPopular(context)) {
+            return context.getString(R.string.pref_sort_popular);
+        } else if (isFav(context)) {
+            return context.getString(R.string.pref_sort_fav);
+        } else {
+            return context.getString(R.string.pref_sort_high_rated);
+        }
+    }
+
 
     public static void renderImage(final Context context, final String originalWebUrl, final ImageView imageView) {
 //        //check the table for original url

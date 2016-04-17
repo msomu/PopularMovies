@@ -3,18 +3,23 @@ package com.msomu.popularmovies.main;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.msomu.popularmovies.R;
+import com.msomu.popularmovies.Utility;
 import com.msomu.popularmovies.sync.MoviesSyncAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private static final String TAG = "MainActivity";
     private boolean mTwoPane;
+    private String mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLocation = Utility.getSortValue(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (findViewById(R.id.weather_detail_container) != null) {
@@ -46,7 +51,25 @@ public class MainActivity extends AppCompatActivity {
         MoviesSyncAdapter.initializeSyncAdapter(this);
     }
 
-//    @Override
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String location = Utility.getSortValue(this);
+        Log.d(TAG, "OnResume called");
+        if (location != null && !location.equals(mLocation)) {
+            MainActivityFragment ff = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+            if (null != ff) {
+                ff.onLocationChanged();
+            }
+//            DetailActivityFragment df = (DetailActivityFragment) getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+//            if (null != df) {
+//                df.onLocationChanged(location);
+//            }
+            mLocation = location;
+        }
+    }
+
+    //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.menu_main, menu);

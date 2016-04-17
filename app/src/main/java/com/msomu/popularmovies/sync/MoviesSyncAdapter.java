@@ -269,7 +269,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_VOTE, movieModel.getVoteAverage());
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_DESCRIPTION, movieModel.getPlotSynopsis());
             movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV, 0);
-            String sort = Utility.getSortPreference(getContext());
+            String sort = Utility.getSortValue(getContext());
             if (sort.equals(getContext().getString(R.string.pref_sort_high_rated))) {
                 movieValues.put(MoviesContract.MoviesEntry.COLUMN_AVG, 1);
             } else {

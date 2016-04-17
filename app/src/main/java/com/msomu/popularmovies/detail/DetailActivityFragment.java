@@ -57,6 +57,7 @@ public class DetailActivityFragment extends Fragment {
     private List<TrailerModel> trailersList;
     private List<ReviewsModel> reviewsList;
     private LinearLayout trailersLayout, reviewsLayout;
+    private Uri mUri;
 
     public DetailActivityFragment() {
         setHasOptionsMenu(true);
@@ -155,6 +156,16 @@ public class DetailActivityFragment extends Fragment {
             mShareActionProvider.setShareIntent(sharingIntent);
         }
     }
+
+//    void onLocationChanged(String newLocation) {
+//        // replace the uri, since the location has changed
+//        Uri uri = mUri;
+//        if (null != uri) {
+//            Uri updatedUri = MoviesContract.MoviesEntry.buildMovieUri(mMovie.getId());
+//            mUri = updatedUri;
+//            getLoaderManager().restartLoader(LOADER, null, this);
+//        }
+//    }
 
     public class Fetchtrailers extends AsyncTask<String, Void, Void> {
 
