@@ -138,15 +138,13 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 
         Uri weatherForLocationUri = MoviesContract.MoviesEntry.CONTENT_URI;
         String sortPreference = Utility.getSortPreference(getContext());
-        String sort;
         if (sortPreference.equals(getString(R.string.pref_sort_fav))) {
-            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, null);
+            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, MoviesContract.MoviesEntry.COLUMN_MOVIE_FAV + " == ?", new String[]{"1"}, null);
         } else if (sortPreference.equals(getString(R.string.pref_sort_high_rated))) {
-            sort = MoviesContract.MoviesEntry.COLUMN_MOVIE_VOTE + " ASC";
-            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, sort);
+            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, MoviesContract.MoviesEntry.COLUMN_AVG + " == ?", new String[]{"1"}, null);
         } else {
             //popular
-            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, null, null, null);
+            return new CursorLoader(getActivity(), weatherForLocationUri, FORECAST_COLUMNS, MoviesContract.MoviesEntry.COLUMN_POPULAR + " == ?", new String[]{"1"}, null);
         }
 //        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri,
 //                null, null, null, sortOrder);
