@@ -18,7 +18,7 @@ package com.msomu.popularmovies.main;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Handler;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,9 +29,10 @@ import android.widget.TextView;
 import com.msomu.popularmovies.CursorRecyclerViewAdapter;
 import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.Utility;
+import com.msomu.popularmovies.data.MoviesContract;
 import com.msomu.popularmovies.model.MovieModel;
 
-public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewAdapter.ViewHolder> implements View.OnClickListener {
+public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewAdapter.ViewHolder> {
 
     private OnItemClickListener onItemClickListener;
     private Context context;
@@ -48,7 +49,6 @@ public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewA
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler, parent, false);
-        v.setOnClickListener(this);
         return new ViewHolder(v);
     }
 
@@ -63,30 +63,23 @@ public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewA
 
     @Override
     public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
-        MovieModel item = MovieModel.from(cursor);
+        final MovieModel item = MovieModel.from(cursor);
         holder.text.setText(item.getText());
         holder.image.setImageBitmap(null);
         //Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
         Utility.renderImage(context, item.getImage(), holder.image);
         holder.itemView.setTag(item);
-    }
-
-    @Override
-    public void onClick(final View v) {
-        // Give some time to the ripple to finish the effect
-        if (onItemClickListener != null) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    onItemClickListener.onItemClick(v, (MovieModel) v.getTag());
-                }
-            }, 200);
-        }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(MoviesContract.MoviesEntry.buildMovieUri(item.getId()));
+            }
+        });
     }
 
     public interface OnItemClickListener {
 
-        void onItemClick(View view, MovieModel movieModel);
+        void onItemClick(Uri contentUri);
 
     }
 

@@ -68,7 +68,6 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     public void onStart() {
         super.onStart();
         setHasOptionsMenu(true);
-        getMoviesList();
     }
 
     @Override
@@ -101,10 +100,6 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
         return true;
     }
 
-    private void getMoviesList() {
-        //TODO
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -122,9 +117,8 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     }
 
     @Override
-    public void onItemClick(View view, MovieModel movieModel) {
-        Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, movieModel);
+    public void onItemClick(Uri contentUri) {
+        Intent intent = new Intent(getActivity(), DetailActivity.class).setData(contentUri);
         startActivity(intent);
     }
 

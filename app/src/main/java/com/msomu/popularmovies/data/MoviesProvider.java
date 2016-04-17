@@ -27,8 +27,12 @@ public class MoviesProvider extends ContentProvider {
 
     static final int MOVIES = 100;
     static final int IMAGES = 200;
+    static final int MOVIES_WITH_ID = 300;
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
+
+    private static final String sMovieFromId =
+            MoviesContract.MoviesEntry._ID + "== ?";
 
     private MoviesDbHelper mOpenHelper;
 
@@ -47,6 +51,7 @@ public class MoviesProvider extends ContentProvider {
         // MoviesContract to help define the types to the UriMatcher.
         matcher.addURI(authority, MoviesContract.PATH_MOVIES, MOVIES);
         matcher.addURI(authority, MoviesContract.PATH_IMAGES, IMAGES);
+        matcher.addURI(authority, MoviesContract.PATH_MOVIES + "/#", MOVIES_WITH_ID);
         // 3) Return the new matcher!
         return matcher;
     }
@@ -78,6 +83,8 @@ public class MoviesProvider extends ContentProvider {
                 return MoviesContract.MoviesEntry.CONTENT_TYPE;
             case IMAGES:
                 return MoviesContract.ImageEntry.CONTENT_TYPE;
+            case MOVIES_WITH_ID:
+                return MoviesContract.MoviesEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -97,6 +104,10 @@ public class MoviesProvider extends ContentProvider {
             }
             case IMAGES: {
                 retCursor = mOpenHelper.getReadableDatabase().query(MoviesContract.ImageEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            }
+            case MOVIES_WITH_ID: {
+                retCursor = mOpenHelper.getReadableDatabase().query(MoviesContract.MoviesEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
             default:

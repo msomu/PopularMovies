@@ -37,12 +37,16 @@ public class MovieModel implements Parcelable {
         }
     };
     private int id;
+    private int movieId;
     private String text;
     private String image;
     private String bgImage;
     private String releaseDate;
     private String voteAverage;
     private String plotSynopsis;
+
+    public MovieModel() {
+    }
 
     public MovieModel(int id, String text, String image, String bgImage, String releaseDate, String voteAverage, String plotSynopsis) {
         this.id = id;
@@ -65,7 +69,8 @@ public class MovieModel implements Parcelable {
     }
 
     public static MovieModel from(Cursor cursor) {
-        int id = cursor.getInt(MainActivityFragment.COL_MOVIE_ID);
+        int id = cursor.getInt(MainActivityFragment.COL_ID);
+        int movieId = cursor.getInt(MainActivityFragment.COL_MOVIE_ID);
         String text = cursor.getString(MainActivityFragment.COL_MOVIE_NAME);
         String image = cursor.getString(MainActivityFragment.COL_MOVIE_IMAGE_URL);
         String bgimage = cursor.getString(MainActivityFragment.COL_MOVIE_BG_IMAGE_URL);
@@ -73,6 +78,7 @@ public class MovieModel implements Parcelable {
         String voteAverage = cursor.getString(MainActivityFragment.COL_MOVIE_VOTE);
         String plotSynopsis = cursor.getString(MainActivityFragment.COL_MOVIE_DESCRIPTIO);
         MovieModel movieModel = new MovieModel(id, text, image, bgimage, releaseDate, voteAverage, plotSynopsis);
+        movieModel.setMovieId(movieId);
         return movieModel;
     }
 
@@ -146,5 +152,13 @@ public class MovieModel implements Parcelable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 }

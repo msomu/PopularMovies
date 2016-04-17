@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.Utility;
+import com.msomu.popularmovies.detail.DetailActivityFragment;
 import com.msomu.popularmovies.sync.MoviesSyncAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,11 +31,11 @@ public class MainActivity extends AppCompatActivity {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
-//            if (savedInstanceState == null) {
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.weather_detail_container, DetailActivityFragment.getInstance(), DETAILFRAGMENT_TAG)
-//                        .commit();
-//            }
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container, new DetailActivityFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
+            }
         } else {
             mTwoPane = false;
             getSupportActionBar().setElevation(0f);
@@ -61,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
             if (null != ff) {
                 ff.onLocationChanged();
             }
-//            DetailActivityFragment df = (DetailActivityFragment) getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
-//            if (null != df) {
-//                df.onLocationChanged(location);
-//            }
+            DetailActivityFragment df = (DetailActivityFragment) getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+            if (null != df) {
+                df.onLocationChanged(location);
+            }
             mLocation = location;
         }
     }
