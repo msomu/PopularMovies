@@ -23,7 +23,6 @@ import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.SettingsActivity;
 import com.msomu.popularmovies.Utility;
 import com.msomu.popularmovies.data.MoviesContract;
-import com.msomu.popularmovies.detail.DetailActivity;
 import com.msomu.popularmovies.model.MovieModel;
 import com.msomu.popularmovies.sync.MoviesSyncAdapter;
 
@@ -118,8 +117,8 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
 
     @Override
     public void onItemClick(Uri contentUri) {
-        Intent intent = new Intent(getActivity(), DetailActivity.class).setData(contentUri);
-        startActivity(intent);
+        ((Callback) getActivity())
+                .onItemSelected(contentUri);
     }
 
     @Override
@@ -166,6 +165,13 @@ public class MainActivityFragment extends Fragment implements RecyclerViewAdapte
     @Override
     public void onLoaderReset(Loader loader) {
         adapter.swapCursor(null);
+    }
+
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onItemSelected(Uri dateUri);
     }
 
 //    /**

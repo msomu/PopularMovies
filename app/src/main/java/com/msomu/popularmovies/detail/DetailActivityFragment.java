@@ -62,7 +62,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public static final int COL_MOVIE_RELEASE_DATE = 5;
     public static final int COL_MOVIE_VOTE = 6;
     public static final int COL_MOVIE_DESCRIPTIO = 7;
-    static final String DETAIL_URI = "URI";
+    public static final String DETAIL_URI = "URI";
     private static final String TAG = "DetailActivityFragment";
     private static final int DETAIL_LOADER = 0;
     private static final String[] FORECAST_COLUMNS = {
@@ -153,7 +153,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(TAG, mUri.toString());
         if (null != mUri) {
             return new CursorLoader(
                     getActivity(),

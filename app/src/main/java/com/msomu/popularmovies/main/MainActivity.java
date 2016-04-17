@@ -1,5 +1,7 @@
 package com.msomu.popularmovies.main;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -7,10 +9,11 @@ import android.util.Log;
 
 import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.Utility;
+import com.msomu.popularmovies.detail.DetailActivity;
 import com.msomu.popularmovies.detail.DetailActivityFragment;
 import com.msomu.popularmovies.sync.MoviesSyncAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private static final String TAG = "MainActivity";
     private boolean mTwoPane;
@@ -67,6 +70,28 @@ public class MainActivity extends AppCompatActivity {
                 df.onLocationChanged(location);
             }
             mLocation = location;
+        }
+    }
+
+    @Override
+    public void onItemSelected(Uri contentUri) {
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            Bundle args = new Bundle();
+            args.putParcelable(DetailActivityFragment.DETAIL_URI, contentUri);
+
+            DetailActivityFragment fragment = new DetailActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.weather_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .setData(contentUri);
+            startActivity(intent);
         }
     }
 
