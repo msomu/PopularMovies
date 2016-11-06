@@ -1,6 +1,5 @@
 # PopularMovies
-=======
-
+---------------
 PopularMovies lets you discover the most popular movies playing
 
 Build Instructions (Mac OS X)
