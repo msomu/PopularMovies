@@ -19,7 +19,7 @@ package com.msomu.popularmovies.main;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +31,7 @@ import com.msomu.popularmovies.R;
 import com.msomu.popularmovies.Utility;
 import com.msomu.popularmovies.data.MoviesContract;
 import com.msomu.popularmovies.model.MovieModel;
+import com.squareup.picasso.Picasso;
 
 public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -66,8 +67,8 @@ public class RecyclerViewAdapter extends CursorRecyclerViewAdapter<RecyclerViewA
         final MovieModel item = MovieModel.from(cursor);
         holder.text.setText(item.getText());
         holder.image.setImageBitmap(null);
-        //Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
-        Utility.renderImage(context, item.getImage(), holder.image);
+        Picasso.with(holder.image.getContext()).load(item.getImage()).into(holder.image);
+//        Utility.renderImage(context, item.getImage(), holder.image);
         holder.itemView.setTag(item);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
